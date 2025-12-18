@@ -1,23 +1,26 @@
-name: Ritual of Compression
+# .github/workflows/zip-repo.yml
+name: Archive Repository as ZIP
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  zip-and-store:
+  zip-and-upload:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🧾 Призвать репозиторий
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v3
 
-      - name: 📦 Сжать содержимое
+      - name: 📦 Create ZIP archive
         run: |
-          zip -r "repo-$(date +%Y-%m-%d).zip" . -x '*.git*'
+          zip -r repo-archive-${{ github.run_number }}.zip . -x '*.git*'
 
-      - name: ☁️ Загрузить как артефакт
+      - name: ☁️ Upload ZIP as artifact
         uses: actions/upload-artifact@v3
         with:
           name: repo-archive
-          path: repo-*.zip
+          path: repo-archive-${{ github.run_number }}.zip
