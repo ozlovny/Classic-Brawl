@@ -1,0 +1,23 @@
+name: Ritual of Compression
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  zip-and-store:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧾 Призвать репозиторий
+        uses: actions/checkout@v3
+
+      - name: 📦 Сжать содержимое
+        run: |
+          zip -r "repo-$(date +%Y-%m-%d).zip" . -x '*.git*'
+
+      - name: ☁️ Загрузить как артефакт
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo-archive
+          path: repo-*.zip
